@@ -8,11 +8,11 @@
 <div id="chartContainer">
 
   <script type="text/javascript">
-    var svg = dimple.newSvg("#chartContainer", 1000, 2000);
+    var svg = dimple.newSvg("#chartContainer", 1100, 1100);
       d3.json("./data/immunize.json", function (data) {
         data = dimple.filterData(data, "district_name", "Seattle Public Schools");
         var myChart = new dimple.chart(svg, data);
-        myChart.setBounds(60, 30, 1000, 800)
+        myChart.setBounds(60, 30, 1000, 800);
         myChart.addCategoryAxis("x", "school_name")
           .addOrderRule("number_enrolled", "desc");
         myChart.addMeasureAxis("y", "number_enrolled");
@@ -20,8 +20,40 @@
         myChart.addMeasureAxis("z", "number_exempt");
         var pies = myChart.addSeries("school_type", dimple.plot.pie);
         //pies.radius = 20;
-        myChart.addLegend(900, 40, 40, 360, "right");
+        var myLegend = myChart.addLegend(900, 40, 40, 360, "right");
         myChart.draw();
+        
+        // interactive legend based on this example:
+        // http://dimplejs.org/advanced_examples_viewer.html?id=advanced_interactive_legends
+        myChart.legends = [];
+        
+        var filterValues = dimple.getUniqueValues(data, "school_type");
+        myLegend.shapes.selectAll("rect")
+          .on("click", function (e) {
+            var hide = false;
+            var newFilters = [];
+            
+            filterValues.forEach(function (f) {
+              if (f === e.aggField.slice(-1)[0]) {
+                hide = true;
+              } else {
+                newFilters.push(f);
+              }
+            });
+            
+            if (hide) {
+              d3.select(this).style("opacity", 0.2);
+            } else {
+              newFilters.push(e.aggField.slice(-1)[0]);
+              d3.select(this).style("opacity", 0.8);
+            }
+            
+            filterValues = newFilters;
+            myChart.data = dimple.filterData(data, "school_type", filterValues);
+            myChart.draw(800);
+            
+          });
+          
       });
   </script>
 </div>
