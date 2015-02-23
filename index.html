@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<meta charset="utf-8"><html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.js"></script>
+  <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
+</head>
+<body>
+<div id="chartContainer">
+
+  <script type="text/javascript">
+    var svg = dimple.newSvg("#chartContainer", 600, 800);
+      d3.json("./data/immunize.json", function (data) {
+        data = dimple.filterData(data, "district_name", "Seattle Public Schools");
+        var myChart = new dimple.chart(svg, data);
+        myChart.setBounds(60, 30, 500, 330)
+        myChart.addCategoryAxis("x", ["school_type", "school_name"])
+          .addOrderRule("number_enrolled");
+        myChart.addMeasureAxis("y", "number_enrolled");
+        myChart.addMeasureAxis("p", "number_exempt");
+        myChart.addMeasureAxis("z", "number_exempt");
+        var pies = myChart.addSeries("grade_levels", dimple.plot.pie);
+        //pies.radius = 20;
+        myChart.addLegend(140, 10, 360, 20, "right");
+        myChart.draw();
+      });
+  </script>
+</div>
+</body>
