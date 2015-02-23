@@ -8,19 +8,19 @@
 <div id="chartContainer">
 
   <script type="text/javascript">
-    var svg = dimple.newSvg("#chartContainer", 600, 800);
+    var svg = dimple.newSvg("#chartContainer", 1000, 2000);
       d3.json("./data/immunize.json", function (data) {
         data = dimple.filterData(data, "district_name", "Seattle Public Schools");
         var myChart = new dimple.chart(svg, data);
-        myChart.setBounds(60, 30, 500, 330)
-        myChart.addCategoryAxis("x", ["school_type", "school_name"])
-          .addOrderRule("number_enrolled");
+        myChart.setBounds(60, 30, 1000, 800)
+        myChart.addCategoryAxis("x", "school_name")
+          .addOrderRule("number_enrolled", "desc");
         myChart.addMeasureAxis("y", "number_enrolled");
         myChart.addMeasureAxis("p", "number_exempt");
         myChart.addMeasureAxis("z", "number_exempt");
-        var pies = myChart.addSeries("grade_levels", dimple.plot.pie);
+        var pies = myChart.addSeries("school_type", dimple.plot.pie);
         //pies.radius = 20;
-        myChart.addLegend(140, 10, 360, 20, "right");
+        myChart.addLegend(900, 40, 40, 360, "right");
         myChart.draw();
       });
   </script>
